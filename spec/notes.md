@@ -21,3 +21,5 @@ void myCoolFunction(string test) {
 
 export myCoolFunction;
 ```
+
+native vector/matrix support because llvm can output spirv and it'd be funny to use this as a shader lang lol
