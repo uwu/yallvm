@@ -1,16 +1,243 @@
 // very in flux and changeable grammar
 // not for any specific parser generator or anything, just a syntax that feels comfy for playing around :)
+// todo async if were supporting that
 
-WHITESPACE: /[ \t\r\n]+/
+// the following may be useful for reference
+// https://dart.dev/guides/language/specifications/DartLangSpec-v2.10.pdf
 
-TOKENS:
+WHITESPACE /[ \t\r\n]+/
 
-ident /[A-Za-z_][A-Za-z0-9_]+/
-type /[A-Za-z_][A-Za-z0-9_]+\??/
+// numbers
+integerpart /[0-9]+/
+exponent /[eE][+-]?[0-9]/
+decimalpart /\.[0-9]+/
 
-keyword_var /var/
+hexstart /(0x|0X)/
+hexdigits /[A-Fa-f0-9]+/
+
+number integerpart decimalpart? exponent?
+     | hexstart hexdigits
+
+// booleans
+key_true /true/
+key_false /true/
+
+// strings
+// todo oh god jesus these are complex
+
+// symbols
+symbolstart /#/
+
+symbol symbolstart ident
+
+// collection literals
+spread /\.{3}/
+spreadnull /\.{3}\?/
+
+list_element_for key_for lparen for_loop_parts rparen list_element
+list_element_if key_if lparen expr rparen list_element (key_else list_element)?
+list_element_spread (spread | spreadnull) expr
+list_element_map expr colon expr
+
+list_element expr
+           | list_element_map
+           | list_element_spread
+           | list_element_if
+           | list_element_for
+
+list_elements list_element (comma list_element)* comma?
+
+list_literal key_const? typeargs? lsquare list_elements? rsquare
+setmap_literal key_const? typeargs? lbrace list_elements? rbrace
+
+// functions
+function_body fat_arrow expr | block
+expr_function formal_parameters function_body
+
+arguments lparen (arg_list comma?)? rparen
+arg_list named_arg (comma named_arg)*
+       | expressionList (comma named_arg)*
+
+named_arg label expr
+
+// construction
+expr_new key_new constructor_designation arguments
+expr_const_object key_const constructor_designation arguments
+
+// assignment
+assignment_op op_assign
+            | op_cmul
+            | op_cdiv
+            | op_cintdiv
+            | op_cmod
+            | op_cadd
+            | op_csub
+            | op_cshl
+            | op_cshr
+            | op_cshru
+            | op_cand
+            | op_cxor
+            | op_cor
+            | op_cnull
+
+// conditional expressions
+expr_if_null logical_or_expr (op_null logical_or_xpr)*
+expr_conditional expr_if_null (question expr_without_cascade colon expr_without_cascade)?
+
+// logic
+expr_logic_and expr_equality (op_and expr_equality)*
+expr_logic_or expr_logic_and (op_or expr_logic_and)*
+
+// relation
+equality_op op_eq | op_neq
+expr_equality expr_relational (equality_op expr_relational_)?
+          | key_super equality_op epr_relational
+
+relational_op op_gte | op_gt | op_lte | op_lt
+expr_relational expr_bitor (type_test | type_cast | relational_op expr_bitor)?
+              | key_super relational_op expr_bitor
+
+// bitwise expressions
+bitwise_op op_bitand | op_bitxor | op_bitor
+
+expr_bitand expr_shift (op_bitand expr_shift)*
+          | key_super (op_bitand expr_shift)+
+
+expr_bitxor expr_bitand (op_bitxor expr_bitand)*
+          | key_super (op_bitxor expr_bitand)+
+
+expr_bitor expr_bitxor (op_bitor expr_bitxor)*
+         | key_super (op_bitor expr_bitxor)+
+
+// math
+shift_op op_shl | op_shru | op_shr
+expr_shift expr_additive (shift_op expr_additive)*
+         | key_super (shift_op expr_additive)+
+
+additive_op op_add | op_sub
+expr_additive expr_multiplicative (additive_op expr_multiplicative)*
+            | key_super (additive_op expr_multiplicative)+
+
+multiplicative_op op_mul | op_div | op_mod | op_intdiv
+expr_multiplicative expr_unary (multiplicative_op expr_unary)*
+                  | key_super (multilicative_op expr_unary)+
+
+// unary expressions
+prefix_op op_sub | op_neg | op_tilde
+expr_unary prefix_op expr_unary
+         //| expr_await
+         | expr_postfix
+         | (op_sub | op_tilde) key_super
+         | op_incr expr_assignable
+
+// await
+
+// postfix expressions
+increment_ops op_incr | op_decr
+argument_part type_args? arguments
+selector op_neg | selector_assignable | argument_part
+constructor_invocation type_name type_args dot ident arguments
+
+expr_postfix expr_assignable increment_ops | primary selector*
+
+// assignable expressions
+selector_assignable selector_assignable_unconditional | qdot ident
+selector_assignable_unconditional lsquare expr rsquare | dot ident
+selector_assignable_part selector* selector_assignable
+
+expr_assignable primary selector_assignable_part
+              | key_super selector_assignable_unconditional
+              | ident
+
+// identifiers
+ident /[A-Za-z_$][A-Za-z0-9_$]+/
+ident_nodollar /[A-Za-z_][A-Za-z0-9_]+/
+
+qualified_name type_ident dot ident
+             | type_ident dot type_ident dot ident
+
+
+// type testing & casting
+is_op key_is op_neg?
+type_test is_op type_not_void
+type_cast key_as type_not_void
+
+// statements
+// TODO: this is enough work for one morning, imma take a break
+// note: ~1h
+
+// misc
+key_if /if/
+key_else /else/
+key_for /for/
+key_const /const/
+key_var /var/
+key_this /this/
+key_new /new/
+key_super /super/
+key_is /is/
+key_as /as/
+
 op_assign /=/
+op_null /\?\?/
+
+op_or /\|\|/
+op_and /&&/
+
+op_eq /==/
+op_neq /!=/
+op_gt />/
+op_lt /</
+op_gte />=/
+op_lte /<=/
+
+op_bitand /&/
+op_bitor /\|/
+op_bitxor /^/
+
+op_shl /<</
+op_shr />>/
+op_shru />>>/
+
+op_add /\+/
+op_sub /-/
+op_mul /\*/
+op_div /\//
+op_intdiv /~\//
+op_mod /%/
+
+op_tilde /~/
+op_neg /!/
+op_incr /\+\+/
+op_decr /--/
+
+op_cmul /\*=/
+op_cdiv /\/=/
+op_cintdiv /~\/=/
+op_cmod /%=/
+op_cadd /\+=/
+op_csub /-=/
+op_cshl /<<=/
+op_cshr />>=/
+op_cshru />>>=/
+op_cand /&=/
+op_cxor /^=/
+op_cor /\|=/
+op_cnull /\?\?=/
+
+cascade /\.\./
 semicolon /;/
-nullable /\?/
+lparen /\(/
+rparen /\)/
+lsquare /\[/
+rsquare /\]/
+lbrace /\{/
+rbrace /\}/
+colon /:/
+comma /,/
+qdot /\?\./
+dot /\./
+question /\?/
+fat_arrow /=>/
 
 // oh wow unfinished i got sidetracked
