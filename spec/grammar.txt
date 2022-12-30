@@ -1,0 +1,16 @@
+// very in flux and changeable grammar
+// not for any specific parser generator or anything, just a syntax that feels comfy for playing around :)
+
+WHITESPACE: /[ \t\r\n]+/
+
+TOKENS:
+
+ident /[A-Za-z_][A-Za-z0-9_]+/
+type /[A-Za-z_][A-Za-z0-9_]+\??/
+
+keyword_var /var/
+op_assign /=/
+semicolon /;/
+nullable /\?/
+
+// oh wow unfinished i got sidetracked
