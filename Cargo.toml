@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+	"crates/yallvm_ast",
+	"crates/yallvm_parser"
+]
