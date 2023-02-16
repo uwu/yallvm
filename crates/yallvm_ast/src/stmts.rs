@@ -1,12 +1,13 @@
+use crate::{exprs::Expr, Span};
 use yallvm_macros::Ast;
-use crate::Span;
 
 #[derive(Clone)]
 pub enum Stmt {
-	Expr(ExprStmt)
+	Expr(ExprStmt),
 }
 
 #[derive(Clone, Ast)]
 pub struct ExprStmt {
 	pub span: Span,
+	pub expr: Box<Expr>,
 }
