@@ -47,13 +47,16 @@ pub fn derive_ast_node(input: TokenStream) -> TokenStream {
 		let enum_name: String = if name_str.ends_with("Stmt") { "Stmt".into() } else { "Expr".into() };
 		let trait_name = enum_name.clone() + "Node";
 
+		let submod_name = enum_name.clone().to_lowercase() + "s";
+
 		let enum_name = Ident::new(enum_name.as_str(), Span::call_site().into());
 		let trait_name = Ident::new(trait_name.as_str(), Span::call_site().into());
+		let submod_name = Ident::new(submod_name.as_str(), Span::call_site().into());
 
 		result.extend(quote! {
 			impl crate::traits::#trait_name for #name {
-				fn to_enum(self) -> crate::stmts::Stmt {
-					crate::stmts::#enum_name::#trimmed_name(self)
+				fn to_enum(self) -> crate::#submod_name::#enum_name {
+					crate::#submod_name::#enum_name::#trimmed_name(self)
 				}
 			}
 		})

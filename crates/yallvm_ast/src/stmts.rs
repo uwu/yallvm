@@ -11,3 +11,9 @@ pub struct ExprStmt {
 	pub span: Span,
 	pub expr: Box<Expr>,
 }
+
+#[derive(Clone, Ast)]
+pub struct Ident {
+	pub span: Span,
+	pub value: String,
+}
