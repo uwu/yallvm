@@ -1,8 +1,8 @@
 use yallvm_macros::Ast;
 
-use crate::{stmts::Ident, Span};
+use crate::{Ident, Span};
 
-#[derive(Clone)]
+#[derive(Clone, Ast)]
 pub enum Expr {
 	StrLit(StrLitExpr),
 	IntLit(IntLitExpr),

@@ -13,7 +13,8 @@ Important and AST-wide design choices to be aware of:
  - All node structs have a `span` field which provides the byte positions and line number of
    every AST node. These are used to provide useful error messages to the compiler.
  - All node structs implement `Clone`, and `Span` implements `Default`.
- - All nodes provide a `tobox()` method that allows boxing from postfix, for ease of use
- - All `Stmt`s and `Expr`s provide a `enum()` method that wraps them in the relevant enum, for ease of use
+ - All nodes provide a `to_box()` method that allows boxing from postfix, for ease of use
+ - All `Stmt`s, `Expr`s, etc provide a `to_enum()` method that wraps them in the relevant enum, for ease of use
  - All string literals are `String`s
  - All collections are `Vec`s
+ - Types are generally called `type_` in nodes, as `type` is a keyword in Rust. Same for some others.
