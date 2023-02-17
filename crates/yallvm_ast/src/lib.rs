@@ -35,7 +35,7 @@ pub struct Ident {
 }
 
 // TODO: types will not be idents
-pub type Type = Ident;
+pub type TypeName = Ident;
 
 #[derive(Clone, Copy, Ast)]
 pub enum Op {

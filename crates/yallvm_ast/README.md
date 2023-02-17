@@ -18,3 +18,5 @@ Important and AST-wide design choices to be aware of:
  - All string literals are `String`s
  - All collections are `Vec`s
  - Types are generally called `type_` in nodes, as `type` is a keyword in Rust. Same for some others.
+ - Most nodes that are functions (arrows, methods, functions, operators, constructors) use the
+   `FuncCommon` type to store all the common properties together, to reduce duplication.
