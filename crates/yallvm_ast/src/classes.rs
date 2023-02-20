@@ -1,7 +1,7 @@
 use crate::{exprs::Expr, Span, Ident, TypeName, BinOp, funcs::{FuncCommon, TypeGeneric}};
 use yallvm_macros::Ast;
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct ClassStmt {
 	pub span: Span,
 	pub name: Ident,
@@ -15,7 +15,7 @@ pub struct ClassStmt {
 	pub generics: Vec<TypeGeneric>
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 /// nodes that are members of a class
 pub enum Member {
 	InstVar(InstVarMember),
@@ -24,7 +24,7 @@ pub enum Member {
 	Operator(OperatorMember),
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct InstVarMember {
 	pub span: Span,
 	pub name: Ident,
@@ -36,7 +36,7 @@ pub struct InstVarMember {
 	pub static_: bool
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct ConstructorMember {
 	pub span: Span,
 	pub name: Option<Ident>,
@@ -47,14 +47,14 @@ pub struct ConstructorMember {
 	pub init_list: Option<ConstructorInitList>
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub enum ConstructorInitList {
 	InitList/* (Vec<Box<DeclStmt>>) */,
 	Assertion(Box<Expr>),
 	Redirect(ConstructorRedirect)
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct ConstructorRedirect {
 	pub span: Span,
 	pub super_: bool,
@@ -62,7 +62,7 @@ pub struct ConstructorRedirect {
 	pub params: Vec<Box<Expr>>
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct MethodMember {
 	pub span: Span,
 	pub name: Ident,
@@ -70,7 +70,7 @@ pub struct MethodMember {
 	pub func: FuncCommon,
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct OperatorMember {
 	pub span: Span,
 	pub op: BinOp,

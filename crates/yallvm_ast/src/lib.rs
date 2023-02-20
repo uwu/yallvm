@@ -1,13 +1,12 @@
 use stmts::Stmt;
 use yallvm_macros::Ast;
 
-pub mod traits;
 pub mod exprs;
 pub mod stmts;
 pub mod funcs;
 pub mod classes;
 
-#[derive(Default, Clone)]
+#[derive(Debug, Default, Clone)]
 /// The purpose of the `Span` is to keep track of where in the input file the node is,
 /// for compiler usage when outputting helpful information to the user.
 pub struct Span {
@@ -23,13 +22,13 @@ pub struct Span {
 	pub line_end: usize,
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct Program {
 	pub span: Span,
 	pub stmts: Vec<Box<Stmt>>,
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct Ident {
 	pub span: Span,
 	pub value: String,
@@ -38,7 +37,7 @@ pub struct Ident {
 // TODO: types will not be idents
 pub type TypeName = Ident;
 
-#[derive(Clone, Copy, Ast)]
+#[derive(Debug, Clone, Copy, Ast)]
 pub enum BinOp {
 	Lt,
 	Gt,
@@ -61,7 +60,7 @@ pub enum BinOp {
 	Eq,
 }
 
-#[derive(Clone, Copy, Ast)]
+#[derive(Debug, Clone, Copy, Ast)]
 pub enum UnaryOp {
 	Pos,
 	Neg,

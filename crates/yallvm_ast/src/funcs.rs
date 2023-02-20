@@ -2,7 +2,7 @@ use yallvm_macros::Ast;
 
 use crate::{exprs::Expr, stmts::BlockStmt, Ident, Span, TypeName};
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub enum FuncBody {
 	Expr(Box<Expr>),
 	Block(Box<BlockStmt>),
@@ -10,7 +10,7 @@ pub enum FuncBody {
 	EmptyBody,
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct FuncCommon {
 	pub span: Span,
 	pub body: FuncBody,
@@ -19,7 +19,7 @@ pub struct FuncCommon {
 	pub generics: Vec<TypeGeneric>
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct FuncParam {
 	pub span: Span,
 	pub type_: TypeName,
@@ -29,13 +29,13 @@ pub struct FuncParam {
 	pub prefix: Option<FuncParamPrefix>,
 }
 
-#[derive(Clone, Copy, Ast)]
+#[derive(Debug, Clone, Copy, Ast)]
 pub enum FuncParamPrefix {
 	Super,
 	This,
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct TypeGeneric {
 	pub span: Span,
 	pub name: Ident,

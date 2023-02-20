@@ -21,21 +21,11 @@ fn remove_last_chars(amt: usize, s: &String) -> Option<String> {
 pub fn derive_ast_node(input: TokenStream) -> TokenStream {
 	//! implements relevant ast node traits for the struct
 
-	// parse rust code lmao
-	let input = parse_macro_input!(input as DeriveInput);
+	// get the name of the struct we are deriving on
+	let name_ident = (parse_macro_input!(input as DeriveInput)).ident;
+	let name_str = name_ident.to_string();
 
-	// get the name of the struct as an ident
-	let name = input.ident;
-
-	// construct an AstNode implementation
-	let mut result = quote! {
-		#[automatically_derived]
-		impl crate::traits::AstToBox for #name {}
-	};
-
-	// implement enums and add onto result
-	let name_str = name.to_string();
-
+	// implement relevant enum
 	for (enum_name, submod_name) in ENUMS {
 		if !name_str.ends_with(enum_name) {
 			continue;
@@ -51,20 +41,30 @@ pub fn derive_ast_node(input: TokenStream) -> TokenStream {
 			continue;
 		}
 
-		let trimmed_name = Ident::new(&trimmed_name.as_str(), name.span());
+		let trimmed_name = Ident::new(&trimmed_name.as_str(), name_ident.span());
 
 		let enum_name = Ident::new(enum_name, Span::call_site().into());
 		let submod_name = Ident::new(submod_name, Span::call_site().into());
 
-		result.extend(quote! {
+		return quote! {
 			#[automatically_derived]
-			impl crate::traits::AstToEnum<crate::#submod_name::#enum_name> for #name {
-				fn to_enum(self) -> crate::#submod_name::#enum_name {
-					crate::#submod_name::#enum_name::#trimmed_name(self)
+			impl From<#name_ident> for crate::#submod_name::#enum_name {
+				#[inline(always)]
+				fn from(item: #name_ident) -> crate::#submod_name::#enum_name {
+					crate::#submod_name::#enum_name::#trimmed_name(item)
 				}
 			}
-		});
+
+			#[automatically_derived]
+			impl From<#name_ident> for Box<crate::#submod_name::#enum_name> {
+				#[inline(always)]
+				fn from(item: #name_ident) -> Box<crate::#submod_name::#enum_name> {
+					Box::new(item.into())
+				}
+			}
+		}.into();
 	}
 
-	result.into()
+	// we didn't implement any enums, so return empty
+	TokenStream::default()
 }

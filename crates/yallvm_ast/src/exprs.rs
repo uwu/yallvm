@@ -2,7 +2,7 @@ use yallvm_macros::Ast;
 
 use crate::{Ident, Span, TypeName, BinOp, UnaryOp};
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub enum Expr {
 	StrLit(StrLitExpr),
 	IntLit(IntLitExpr),
@@ -19,25 +19,25 @@ pub enum Expr {
 	TypeName(TypeName)
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct StrLitExpr {
 	pub span: Span,
 	pub value: Vec<StrLitPart>,
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub enum StrLitPart {
 	Str(String),
 	Interpolation(Box<Expr>)
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct IntLitExpr {
 	pub span: Span,
 	pub value: i64,
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct HexLitExpr {
 	pub span: Span,
 	pub value: String,
@@ -49,7 +49,7 @@ impl HexLitExpr {
 	}
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct FloatLitExpr {
 	pub span: Span,
 	pub value: f64,
@@ -67,13 +67,13 @@ impl FloatLitExpr {
 	}
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct BoolLitExpr {
 	pub span: Span,
 	pub value: bool,
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct AssignmentExpr {
 	pub span: Span,
 	pub target: Ident, // TODO member exprs etc
@@ -81,14 +81,14 @@ pub struct AssignmentExpr {
 	pub compound: Option<BinOp>
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct CallExpr {
 	pub span: Span,
 	pub target: Box<Expr>,
 	pub params: Vec<Box<Expr>>
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct BinaryExpr {
 	pub span: Span,
 	pub left: Box<Expr>,
@@ -96,7 +96,7 @@ pub struct BinaryExpr {
 	pub op: BinOp
 }
 
-#[derive(Clone, Ast)]
+#[derive(Debug, Clone, Ast)]
 pub struct UnaryExpr {
 	pub span: Span,
 	pub target: Box<Expr>,
