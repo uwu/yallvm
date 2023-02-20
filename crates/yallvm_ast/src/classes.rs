@@ -1,4 +1,4 @@
-use crate::{exprs::Expr, Span, Ident, TypeName, Op, funcs::{FuncCommon, TypeGeneric}};
+use crate::{exprs::Expr, Span, Ident, TypeName, BinOp, funcs::{FuncCommon, TypeGeneric}};
 use yallvm_macros::Ast;
 
 #[derive(Clone, Ast)]
@@ -30,7 +30,7 @@ pub struct InstVarMember {
 	pub name: Ident,
 	pub init: Option<Box<Expr>>,
 	pub type_: TypeName,
-	pub optional: bool,
+	pub nullable: bool,
 	pub final_: bool,
 	pub late: bool,
 	pub static_: bool
@@ -73,7 +73,7 @@ pub struct MethodMember {
 #[derive(Clone, Ast)]
 pub struct OperatorMember {
 	pub span: Span,
-	pub op: Op,
+	pub op: BinOp,
 	pub override_: bool,
 	pub func: FuncCommon,
 }

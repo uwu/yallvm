@@ -39,7 +39,7 @@ pub struct Ident {
 pub type TypeName = Ident;
 
 #[derive(Clone, Copy, Ast)]
-pub enum Op {
+pub enum BinOp {
 	Lt,
 	Gt,
 	Lte,
@@ -47,7 +47,7 @@ pub enum Op {
 	Sub,
 	Add,
 	Div,
-	SquiggleDiv,
+	IntDiv,
 	Mul,
 	Mod,
 	Or,
@@ -58,6 +58,12 @@ pub enum Op {
 	RShff,
 	Idx,
 	IdxSet,
-	Compl,
 	Eq,
+}
+
+#[derive(Clone, Copy, Ast)]
+pub enum UnaryOp {
+	Pos,
+	Neg,
+	Complement
 }
