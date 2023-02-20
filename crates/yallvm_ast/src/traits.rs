@@ -1,9 +1,4 @@
-use crate::{
-	exprs::Expr,
-	stmts::{Member, Stmt},
-};
-
-pub trait AstNode
+pub trait AstToBox
 where
 	Self: Sized,
 {
@@ -12,14 +7,6 @@ where
 	}
 }
 
-pub trait StmtNode {
-	fn to_enum(self) -> Stmt;
-}
-
-pub trait ExprNode {
-	fn to_enum(self) -> Expr;
-}
-
-pub trait MemberNode {
-	fn to_enum(self) -> Member;
+pub trait AstToEnum<T> {
+	fn to_enum(self) -> T;
 }

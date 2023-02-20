@@ -1,10 +1,11 @@
 use stmts::Stmt;
 use yallvm_macros::Ast;
 
+pub mod traits;
 pub mod exprs;
 pub mod stmts;
-pub mod traits;
 pub mod funcs;
+pub mod classes;
 
 #[derive(Default, Clone)]
 /// The purpose of the `Span` is to keep track of where in the input file the node is,

@@ -4,7 +4,7 @@ use proc_macro::{Span, TokenStream};
 use quote::quote;
 use syn::{parse_macro_input, DeriveInput, Ident};
 
-const ENUMS: [(&str, &str); 3] = [("Stmt", "stmts"), ("Expr", "exprs"), ("Member", "stmts")];
+const ENUMS: [(&str, &str); 3] = [("Stmt", "stmts"), ("Expr", "exprs"), ("Member", "classes")];
 
 fn remove_last_chars(amt: usize, s: &String) -> Option<String> {
 	let len = s.chars().count();
@@ -29,7 +29,8 @@ pub fn derive_ast_node(input: TokenStream) -> TokenStream {
 
 	// construct an AstNode implementation
 	let mut result = quote! {
-		impl crate::traits::AstNode for #name {}
+		#[automatically_derived]
+		impl crate::traits::AstToBox for #name {}
 	};
 
 	// implement enums and add onto result
@@ -39,8 +40,6 @@ pub fn derive_ast_node(input: TokenStream) -> TokenStream {
 		if !name_str.ends_with(enum_name) {
 			continue;
 		}
-
-		let enum_name = String::from(enum_name);
 
 		let trimmed_name = remove_last_chars(enum_name.len(), &name_str);
 		let trimmed_name = match trimmed_name {
@@ -54,14 +53,12 @@ pub fn derive_ast_node(input: TokenStream) -> TokenStream {
 
 		let trimmed_name = Ident::new(&trimmed_name.as_str(), name.span());
 
-		let trait_name = enum_name.clone() + "Node";
-
-		let enum_name = Ident::new(enum_name.as_str(), Span::call_site().into());
-		let trait_name = Ident::new(trait_name.as_str(), Span::call_site().into());
+		let enum_name = Ident::new(enum_name, Span::call_site().into());
 		let submod_name = Ident::new(submod_name, Span::call_site().into());
 
 		result.extend(quote! {
-			impl crate::traits::#trait_name for #name {
+			#[automatically_derived]
+			impl crate::traits::AstToEnum<crate::#submod_name::#enum_name> for #name {
 				fn to_enum(self) -> crate::#submod_name::#enum_name {
 					crate::#submod_name::#enum_name::#trimmed_name(self)
 				}
