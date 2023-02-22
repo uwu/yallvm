@@ -4,7 +4,12 @@ use proc_macro::{Span, TokenStream};
 use quote::quote;
 use syn::{parse_macro_input, DeriveInput, Ident};
 
-const ENUMS: [(&str, &str); 3] = [("Stmt", "stmts"), ("Expr", "exprs"), ("Member", "classes")];
+const ENUMS: &[(&str, &str)] = &[
+	("Stmt", "stmts"),
+	("Expr", "exprs"),
+	("Member", "classes"),
+	("CollectionItem", "exprs"),
+];
 
 fn remove_last_chars(amt: usize, s: &String) -> Option<String> {
 	let len = s.chars().count();
@@ -62,7 +67,8 @@ pub fn derive_ast_node(input: TokenStream) -> TokenStream {
 					Box::new(item.into())
 				}
 			}
-		}.into();
+		}
+		.into();
 	}
 
 	// we didn't implement any enums, so return empty
